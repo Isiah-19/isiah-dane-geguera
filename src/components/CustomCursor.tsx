@@ -11,6 +11,8 @@ export default function CustomCursor() {
 
     if (!window.matchMedia('(pointer: fine)').matches) return;
 
+    document.body.style.cursor = 'none';
+
     let mouseX = -100;
     let mouseY = -100;
     let followerX = -100;

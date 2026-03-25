@@ -27,8 +27,7 @@ export default function Hero({ isReady = true }: HeroProps) {
           e.currentTarget.play();
         }}
       >
-        <source src="https://godestinationservices.com/wp-content/uploads/2026/03/web-design-and-development-concept-2026-01-28-05-17-21-utc-1.mov" type="video/quicktime"/>
-        <source src="https://godestinationservices.com/wp-content/uploads/2026/03/web-design-and-development-concept-2026-01-28-05-17-21-utc-1.mov" type="video/mp4"/>
+        <source src="https://cdn.pixabay.com/video/2020/05/25/40131-424916846_large.mp4" type="video/mp4"/>
       </motion.video>
       <div className="absolute inset-0 z-10 hero-gradient h-[400px] mt-auto"></div>
       <div className="absolute inset-0 z-10 bg-black/10"></div>

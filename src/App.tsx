@@ -23,11 +23,18 @@ import Footer from './components/Footer';
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(() => {
-    // Check if we've already shown the preloader in this session
-    return !sessionStorage.getItem('preloaderShown');
+    try {
+      return !sessionStorage.getItem('preloaderShown');
+    } catch (e) {
+      return false;
+    }
   });
   const [isReady, setIsReady] = useState(() => {
-    return !!sessionStorage.getItem('preloaderShown');
+    try {
+      return !!sessionStorage.getItem('preloaderShown');
+    } catch (e) {
+      return true;
+    }
   });
 
   useEffect(() => {
@@ -36,7 +43,11 @@ export default function App() {
       window.scrollTo(0, 0);
     } else {
       document.body.style.overflow = '';
-      sessionStorage.setItem('preloaderShown', 'true');
+      try {
+        sessionStorage.setItem('preloaderShown', 'true');
+      } catch (e) {
+        // Ignore
+      }
     }
   }, [isLoading]);
 
