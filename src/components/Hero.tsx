@@ -37,7 +37,7 @@ export default function Hero({ isReady = true }: HeroProps) {
         initial={{ opacity: 0, y: 30 }} 
         animate={isReady ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }} 
         transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }} 
-        className="relative z-20 text-center px-4 max-w-5xl mx-auto mt-40"
+        className="relative z-20 text-center px-4 max-w-5xl mx-auto"
       >
         <RevealText 
           as="h1"
