@@ -2,6 +2,7 @@ import { motion, useScroll, useTransform } from "motion/react";
 import { useRef } from "react";
 import RevealText from "./RevealText";
 import HlsVideo from './HlsVideo';
+import isiahImage from "../assets/isiah-dane-about.jpg";
 
 export default function About() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -65,7 +66,7 @@ export default function About() {
           >
             <div className="rounded-xl overflow-hidden bg-white/[0.02] border border-white/[0.05] p-2">
               <img 
-                src={`/profile.jpg?t=${Date.now()}`}
+                src={isiahImage}
                 alt="Isiah Dane Geguera and dog" 
                 className="w-full rounded-lg aspect-[4/5] object-cover transition-all duration-700 hover:scale-105" 
               />
