@@ -21,7 +21,7 @@ export default function Footer() {
 
   return (
     <footer className="bg-black text-white pt-32 pb-12 px-8 border-t border-white/[0.05] relative z-20 overflow-hidden">
-      <div className="container mx-auto max-w-7xl">
+      <div className="max-w-7xl mx-auto w-full">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-32">
           <div className="lg:col-span-2">
             <h3 className="text-2xl font-heading italic mb-6">Isiah Dane Geguera</h3>

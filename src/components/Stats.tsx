@@ -41,7 +41,7 @@ export default function Stats() {
         <img src="https://picsum.photos/seed/stats-dark/1920/1080?blur=4" alt="Stats Background" className="md:hidden w-full h-full object-cover opacity-40 grayscale" />
       </motion.div>
       <div className="absolute inset-0 bg-black/60 z-10"></div>
-      <div className="container mx-auto px-8 relative z-20">
+      <div className="max-w-7xl mx-auto px-8 relative z-20 w-full">
         <motion.div 
           initial={{ opacity: 0, y: 30 }} 
           whileInView={{ opacity: 1, y: 0 }} 

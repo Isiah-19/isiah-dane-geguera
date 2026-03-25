@@ -16,7 +16,7 @@ export default function About() {
     <section ref={containerRef} className="relative py-48 px-8 bg-black overflow-hidden transition-colors duration-300" id="about">
       <div className="absolute top-0 left-0 w-full h-[200px] bg-gradient-to-b from-black to-transparent z-10"></div>
       <div className="absolute bottom-0 left-0 w-full h-[200px] bg-gradient-to-t from-black to-transparent z-10"></div>
-      <div className="container mx-auto relative z-20">
+      <div className="max-w-7xl mx-auto relative z-20">
         <div className="flex flex-col lg:flex-row items-center gap-24">
           <motion.div 
             initial={{ opacity: 0, y: 30 }} 

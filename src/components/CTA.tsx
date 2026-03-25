@@ -20,7 +20,7 @@ export default function CTA() {
         whileInView={{ opacity: 1, y: 0 }} 
         viewport={{ once: true }} 
         transition={{ duration: 0.8 }} 
-        className="container mx-auto px-8 relative z-20 text-center"
+        className="max-w-7xl mx-auto px-8 relative z-20 text-center w-full"
       >
         <h2 className="text-6xl md:text-[8rem] font-heading italic text-white mb-12 leading-none">Ready to elevate your digital presence?</h2>
         <p className="text-white/80 font-body font-light text-lg md:text-xl max-w-2xl mx-auto leading-relaxed mb-12">Let’s collaborate to build a website that reflects the true value of your business.</p>

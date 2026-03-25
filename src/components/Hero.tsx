@@ -22,7 +22,6 @@ export default function Hero({ isReady = true }: HeroProps) {
         muted 
         playsInline 
         disablePictureInPicture
-        poster="https://picsum.photos/seed/hero-dark/1920/1080?blur=2"
         onEnded={(e) => {
           e.currentTarget.currentTime = 0;
           e.currentTarget.play();

@@ -13,7 +13,7 @@ export default function FAQ() {
 
   return (
     <section className="py-32 bg-black transition-colors duration-300" id="faq">
-      <div className="container mx-auto px-8 max-w-4xl">
+      <div className="max-w-4xl mx-auto px-8 w-full">
         <motion.div 
           initial={{ opacity: 0, y: 20 }} 
           whileInView={{ opacity: 1, y: 0 }} 

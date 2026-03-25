@@ -9,7 +9,7 @@ export default function Testimonials() {
 
   return (
     <section className="py-32 bg-black transition-colors duration-300">
-      <div className="container mx-auto px-8">
+      <div className="max-w-7xl mx-auto px-8 w-full">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {testimonials.map((t, index) => (
             <motion.div 
