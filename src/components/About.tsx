@@ -64,11 +64,10 @@ export default function About() {
             className="w-full lg:w-1/2"
           >
             <div className="rounded-xl overflow-hidden bg-white/[0.02] border border-white/[0.05] p-2">
-              <motion.img 
-                style={{ y, scale: 1.1 }}
-                src="/profile-new.jpg" 
+              <img 
+                src={`/profile.jpg?t=${Date.now()}`}
                 alt="Isiah Dane Geguera and dog" 
-                className="w-full rounded-lg aspect-[4/5] object-cover opacity-90 grayscale hover:grayscale-0 transition-all duration-700" 
+                className="w-full rounded-lg aspect-[4/5] object-cover transition-all duration-700 hover:scale-105" 
               />
             </div>
           </motion.div>
