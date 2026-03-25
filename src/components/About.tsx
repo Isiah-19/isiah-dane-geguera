@@ -1,9 +1,19 @@
-import { motion } from "motion/react";
+import { motion, useScroll, useTransform } from "motion/react";
+import { useRef } from "react";
+import RevealText from "./RevealText";
 import HlsVideo from './HlsVideo';
 
 export default function About() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"]
+  });
+  
+  const y = useTransform(scrollYProgress, [0, 1], [-100, 100]);
+
   return (
-    <section className="relative py-48 px-8 bg-black overflow-hidden transition-colors duration-300" id="about">
+    <section ref={containerRef} className="relative py-48 px-8 bg-black overflow-hidden transition-colors duration-300" id="about">
       <div className="absolute top-0 left-0 w-full h-[200px] bg-gradient-to-b from-black to-transparent z-10"></div>
       <div className="absolute bottom-0 left-0 w-full h-[200px] bg-gradient-to-t from-black to-transparent z-10"></div>
       <div className="container mx-auto relative z-20">
@@ -16,8 +26,12 @@ export default function About() {
             className="w-full lg:w-1/2"
           >
             <span className="text-white/60 uppercase tracking-[0.3em] text-[10px] font-body mb-6 block">About</span>
-            <h2 className="text-5xl md:text-7xl font-heading leading-[0.9] text-white mb-8 italic">Crafted for Aesthetics. Engineered for Growth.</h2>
-            <p className="text-white/80 font-body font-light text-lg mb-12 leading-relaxed">Your digital presence should be your most powerful asset. With nearly a decade of expertise blending front-end development, intuitive UI/UX design, and technical SEO, I provide a concierge-level approach to building your online foundation. I partner directly with small business owners to create tailored, luxurious digital environments. From the initial wireframe to the final launch, every detail is meticulously optimized for search engines and aesthetic perfection, ensuring your brand stands out and drives measurable growth.</p>
+            <RevealText 
+              as="h2"
+              text="WordPress Developer & Web Designer" 
+              className="text-5xl md:text-7xl font-heading leading-[0.9] text-white mb-8 italic" 
+            />
+            <p className="text-white/80 font-body font-light text-lg mb-12 leading-relaxed">Hi, I'm Isiah Dane Geguera, a WordPress Developer and Web Designer with 9+ years of experience building modern, high-performing websites. I specialize in WordPress, Elementor, UI/UX design, and SEO, helping businesses create websites that are visually appealing and optimized for growth. I’ve built 70+ websites and enjoy turning ideas into clean, effective digital experiences.</p>
             <div className="space-y-8">
               <div className="flex items-start gap-6">
                 <span className="text-2xl font-heading text-white italic opacity-60">01</span>
@@ -50,8 +64,9 @@ export default function About() {
             className="w-full lg:w-1/2"
           >
             <div className="rounded-xl overflow-hidden bg-white/[0.02] border border-white/[0.05] p-2">
-              <img 
-                src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=800&auto=format&fit=crop" 
+              <motion.img 
+                style={{ y, scale: 1.1 }}
+                src="/profile.jpg" 
                 alt="Isiah Dane Geguera" 
                 className="w-full rounded-lg aspect-[4/5] object-cover opacity-90 grayscale hover:grayscale-0 transition-all duration-700" 
               />

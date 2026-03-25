@@ -43,8 +43,9 @@ export default function Footer() {
           <div>
             <h4 className="text-white/40 uppercase tracking-[0.2em] text-[10px] font-body mb-6">Connect</h4>
             <ul className="space-y-4">
-              <li><a href="https://linkedin.com" target="_blank" rel="noreferrer" className="text-white/80 hover:text-white transition-colors font-light text-sm">LinkedIn</a></li>
-              <li><a href="mailto:contact@example.com" className="text-white/80 hover:text-white transition-colors font-light text-sm">Email</a></li>
+              <li><a href="https://www.linkedin.com/in/isiah-dane-geguera-7496a0194/?skipRedirect=true" target="_blank" rel="noreferrer" className="text-white/80 hover:text-white transition-colors font-light text-sm">LinkedIn</a></li>
+              <li><a href="mailto:igeguera@gmail.com" className="text-white/80 hover:text-white transition-colors font-light text-sm">Email</a></li>
+              <li><a href="https://wa.me/639772655441" target="_blank" rel="noreferrer" className="text-white/80 hover:text-white transition-colors font-light text-sm">WhatsApp</a></li>
             </ul>
             <div className="mt-12">
               <h4 className="text-white/40 uppercase tracking-[0.2em] text-[10px] font-body mb-2">Local Time</h4>
@@ -54,7 +55,7 @@ export default function Footer() {
         </div>
 
         <div className="flex flex-col items-center justify-center border-t border-white/[0.05] pt-12">
-          <h2 className="text-[12vw] leading-none font-heading font-black italic tracking-tighter text-white/[0.03] select-none text-center w-full">
+          <h2 className="text-[12vw] leading-none font-heading font-black italic tracking-tighter text-white/[0.03] hover:text-white/20 transition-colors duration-700 ease-in-out select-none text-center w-full">
             ISIAH GEGUERA
           </h2>
           <div className="w-full flex flex-col md:flex-row justify-between items-center mt-8 text-white/40 font-body font-light text-xs tracking-wide">

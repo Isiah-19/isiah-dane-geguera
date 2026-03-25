@@ -2,12 +2,12 @@ import { motion } from "motion/react";
 
 export default function Portfolio() {
   const projects = [
-    { title: "Folisim Australia", url: "www.folisim.com.au", tags: ["UI/UX", "Frontend"], roi: "+210% Lead Conversion Rate", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuC7JzErHGr7IXiEwYJfNjl-JPjXRA-8IdOI_cVZe6iGuFta2lTSfUMrGmD-EQwMutoUv4ov798cGaw7Xt6rY8HRC839DlZ5cb0ruM09WmCXFdh3PNoMl1Ev8uzx7nOkP_txJa_kNEf_3CeTifkTQ0TUGE6werdnLIUWdWKRFvDGqVve-95HNO8ITvW5wshRy5YVvbZzVF2BLfNXBhBHBvSaXRq3Fn9Ya_nWRT9Gt_e0OG-T1nSHWJTh1KRSa3VpjcFoq2f5_evmeIY" },
-    { title: "Wolfcrete", url: "wolfcreteky.com", tags: ["SaaS", "SEO"], roi: "Page 1 Ranking in 4 Months", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuDh1K5uT4jdkJAOub1iV5S_3hivB-H1NMueWgUAgRWWkWFQe27wnwVVm7klfREWt4D0Ql8V4oSy8MxBzz19aM8ucdsfDZ7KnQoeQgyhFvV_Ou2AgNCUa1c-jqOE238Zo7bl53QbQt4bwbLSScLKgsSZ0mf21Qh12BAFKG5neOy0M-GfRZCS0qRqwx6gw3mpZWlvsG_ZI8XIAh95vXMhDA3Tmf8pc888d1D0RhXdMhAMFuqCajgY6LvwLs3cdGZ5U9ES8cn1qmOB2WI" },
-    { title: "Diana Marie Aesthetics", url: "www.dianamarie.co.uk", tags: ["Retail", "Architecture"], roi: "3x Increase in Online Bookings", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuB2T8Y8-fVz4oE-GfC-0TzM-P3g4J9-G0Z4P9-G0Z4P9-G0Z4P9-G0Z4P9-G0Z4P9-G0Z4P9-G0Z4P9-G0Z4P9-G0Z4P" },
-    { title: "Inked Beauty Bar", url: "inkedbeautybar.net", tags: ["Beauty", "Web Design"], roi: "Award-Winning UI Design", img: "https://picsum.photos/seed/inked/800/600" },
-    { title: "Lucie Oliver Aesthetics", url: "lucieoliveraesthetics.co.uk", tags: ["Aesthetics", "SEO"], roi: "+150% Organic Traffic", img: "https://picsum.photos/seed/lucie/800/600" },
-    { title: "Aura Skin Clinic", url: "auraskin.co.uk", tags: ["Clinic", "Frontend"], roi: "Reduced Bounce Rate by 45%", img: "https://picsum.photos/seed/aura/800/600" }
+    { title: "Folisim Australia", url: "www.folisim.com.au", tags: ["UI/UX", "Frontend"], roi: "+210% Lead Conversion Rate", img: "https://api.microlink.io/?url=https://www.folisim.com.au&screenshot=true&meta=false&embed=screenshot.url" },
+    { title: "Wolfcrete", url: "wolfcreteky.com", tags: ["CMS", "SEO"], roi: "Page 1 Ranking in 4 Months", img: "https://api.microlink.io/?url=https://wolfcreteky.com&screenshot=true&meta=false&embed=screenshot.url" },
+    { title: "Diana Marie Aesthetics", url: "www.dianamarie.co.uk", tags: ["Retail", "Architecture"], roi: "3x Increase in Online Bookings", img: "https://api.microlink.io/?url=https://www.dianamarie.co.uk&screenshot=true&meta=false&embed=screenshot.url" },
+    { title: "Inked Beauty Bar", url: "inkedbeautybar.net", tags: ["Beauty", "Web Design"], roi: "Award-Winning UI Design", img: "https://api.microlink.io/?url=https://inkedbeautybar.net&screenshot=true&meta=false&embed=screenshot.url" },
+    { title: "Lucie Oliver Aesthetics", url: "lucieoliveraesthetics.co.uk", tags: ["Aesthetics", "SEO"], roi: "+150% Organic Traffic", img: "https://s.wordpress.com/mshots/v1/https://lucieoliveraesthetics.co.uk?w=800" },
+    { title: "GO Destination Services", url: "godestinationservices.com", tags: ["Corporate", "SEO"], roi: "Global Reach Expansion", img: "https://api.microlink.io/?url=https://godestinationservices.com/&screenshot=true&meta=false&embed=screenshot.url" }
   ];
 
   return (
@@ -43,7 +43,7 @@ export default function Portfolio() {
               </div>
               <div className="p-8 pt-4">
                 <h3 className="text-3xl font-heading italic text-white mb-2">{project.title}</h3>
-                <p className="text-white/60 font-body font-light text-sm mb-6">{project.url}</p>
+                <a href={`https://${project.url}`} target="_blank" rel="noopener noreferrer" className="text-white/60 hover:text-white transition-colors font-body font-light text-sm mb-6 block">{project.url}</a>
                 <div className="flex gap-2">
                   {project.tags.map((tag, i) => (
                     <span key={i} className="px-3 py-1 bg-white/5 rounded-full text-[10px] text-white/60 uppercase tracking-widest font-body">{tag}</span>

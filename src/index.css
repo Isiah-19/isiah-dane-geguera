@@ -8,6 +8,22 @@
   --font-heading: "Instrument Serif", serif;
   --font-body: "Barlow", sans-serif;
   --font-label: "Barlow", sans-serif;
+  --animate-shimmer: shimmer 2.5s linear infinite;
+  --animate-marquee: marquee 30s linear infinite;
+  
+  @keyframes shimmer {
+    from {
+      background-position: 0 0;
+    }
+    to {
+      background-position: -200% 0;
+    }
+  }
+
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
 }
 
 @layer utilities {

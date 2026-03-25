@@ -13,7 +13,7 @@ export default function ParticleCanvas() {
     if (!ctx) return;
 
     let particles: Particle[] = [];
-    let mouse = { x: -100, y: -100, radius: 150 };
+    let mouse = { x: -1000, y: -1000, radius: 250 };
     let animationFrameId: number;
 
     const resizeCanvas = () => {
@@ -63,35 +63,35 @@ export default function ParticleCanvas() {
       update() {
         let dx = mouse.x - this.x;
         let dy = mouse.y - this.y;
-        let distance = Math.sqrt(dx * dx + dy * dy);
+        let distance = Math.sqrt(dx * dx + dy * dy) || 1;
         let forceDirectionX = dx / distance;
         let forceDirectionY = dy / distance;
         let maxDistance = mouse.radius;
         let force = (maxDistance - distance) / maxDistance;
-        let directionX = forceDirectionX * force * this.density;
-        let directionY = forceDirectionY * force * this.density;
+        let directionX = forceDirectionX * force * this.density * 0.15; // Slower attraction
+        let directionY = forceDirectionY * force * this.density * 0.15;
 
         if (distance < mouse.radius) {
-          this.x -= directionX;
-          this.y -= directionY;
+          this.x += directionX; // Attract to mouse
+          this.y += directionY;
         } else {
           if (this.x !== this.baseX) {
             let dx = this.x - this.baseX;
-            this.x -= dx / 15;
+            this.x -= dx / 60; // Much slower return
           }
           if (this.y !== this.baseY) {
             let dy = this.y - this.baseY;
-            this.y -= dy / 15;
+            this.y -= dy / 60;
           }
         }
-        this.color = 'rgba(255,255,255,0.4)';
+        this.color = 'rgba(255,255,255,0.6)'; // Slightly brighter
       }
     }
 
     function initParticles() {
       particles = [];
       if (window.innerWidth < 768) return; // Disable on mobile
-      let numberOfParticles = (canvas!.width * canvas!.height) / 12000;
+      let numberOfParticles = (canvas!.width * canvas!.height) / 4000; // Increased particle count
       for (let i = 0; i < numberOfParticles; i++) {
         particles.push(new Particle());
       }

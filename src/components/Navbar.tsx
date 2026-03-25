@@ -10,8 +10,8 @@ export default function Navbar() {
         <a className="font-body font-semibold tracking-wide uppercase text-xs text-white/60 hover:text-white transition-colors" href="#portfolio">Portfolio</a>
         <a className="font-body font-semibold tracking-wide uppercase text-xs text-white/60 hover:text-white transition-colors" href="#contact">Contact</a>
       </div>
-      <a className="bg-white text-black px-6 py-2 rounded-full font-body font-semibold text-xs uppercase tracking-widest hover:opacity-90 transition-all active:scale-95 inline-block text-center" href="#contact">
-        Get Started
+      <a className="inline-flex items-center justify-center px-6 py-2 rounded-full font-body font-semibold text-xs uppercase tracking-widest transition-all active:scale-95 text-center border border-white/20 text-white hover:bg-white hover:text-black" href="#contact">
+        Let's Talk
       </a>
     </nav>
   );

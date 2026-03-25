@@ -25,8 +25,8 @@ export default function CTA() {
         <h2 className="text-6xl md:text-[8rem] font-heading italic text-white mb-12 leading-none">Ready to elevate your digital presence?</h2>
         <p className="text-white/80 font-body font-light text-lg md:text-xl max-w-2xl mx-auto leading-relaxed mb-12">Let’s collaborate to build a website that reflects the true value of your business.</p>
         <div className="flex flex-col md:flex-row items-center justify-center gap-6">
-          <MagneticButton href="mailto:contact@example.com" className="px-16 py-8 bg-white text-black rounded-full font-body font-bold text-xl hover:scale-105 transition-transform text-center">Get in Touch</MagneticButton>
-          <MagneticButton href="https://linkedin.com" className="px-16 py-8 bg-white/[0.02] border border-white/[0.05] text-white rounded-full font-body font-bold text-xl hover:bg-white/[0.05] transition-colors text-center backdrop-blur-md">LinkedIn</MagneticButton>
+          <MagneticButton href="mailto:igeguera@gmail.com" className="px-16 py-8 bg-white text-black rounded-full font-body font-bold text-xl hover:scale-105 transition-transform text-center">Email Me</MagneticButton>
+          <MagneticButton href="https://wa.me/639772655441" className="px-16 py-8 bg-white/[0.02] border border-white/[0.05] text-white rounded-full font-body font-bold text-xl hover:bg-white/[0.05] transition-colors text-center backdrop-blur-md">WhatsApp</MagneticButton>
         </div>
       </motion.div>
     </section>

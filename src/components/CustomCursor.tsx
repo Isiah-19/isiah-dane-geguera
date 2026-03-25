@@ -13,39 +13,53 @@ export default function CustomCursor() {
 
     let mouseX = -100;
     let mouseY = -100;
+    let followerX = -100;
+    let followerY = -100;
+    let isHovering = false;
+    let animationFrameId: number;
 
     const onMouseMove = (e: MouseEvent) => {
       mouseX = e.clientX;
       mouseY = e.clientY;
       cursor.style.transform = `translate3d(${mouseX - 4}px, ${mouseY - 4}px, 0)`;
-      follower.style.transform = `translate3d(${mouseX - 20}px, ${mouseY - 20}px, 0)`;
+    };
+
+    const animate = () => {
+      // Smooth follow effect using linear interpolation (lerp)
+      followerX += (mouseX - followerX) * 0.15;
+      followerY += (mouseY - followerY) * 0.15;
+      
+      const scale = isHovering ? 'scale(1.5)' : 'scale(1)';
+      follower.style.transform = `translate3d(${followerX - 20}px, ${followerY - 20}px, 0) ${scale}`;
+      
+      animationFrameId = requestAnimationFrame(animate);
     };
 
     window.addEventListener('mousemove', onMouseMove);
+    animate();
 
-    const interactiveElements = document.querySelectorAll('a, button, .liquid-glass, .liquid-glass-strong');
-    
-    const onMouseEnter = () => {
-      follower.style.transform += ' scale(1.5)';
-      follower.style.backgroundColor = 'rgba(255,255,255,0.1)';
-    };
-    
-    const onMouseLeave = () => {
-      follower.style.transform = follower.style.transform.replace(' scale(1.5)', '');
-      follower.style.backgroundColor = 'transparent';
+    // Event delegation for hover states
+    const handleMouseOver = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const isInteractive = target.closest('a, button, .liquid-glass, .liquid-glass-strong, input, textarea');
+      
+      if (isInteractive) {
+        isHovering = true;
+        follower.style.backgroundColor = 'rgba(255,255,255,0.1)';
+        follower.style.borderColor = 'rgba(255,255,255,0.5)';
+      } else {
+        isHovering = false;
+        follower.style.backgroundColor = 'transparent';
+        follower.style.borderColor = 'rgba(255,255,255,0.3)';
+      }
     };
 
-    interactiveElements.forEach(el => {
-      el.addEventListener('mouseenter', onMouseEnter);
-      el.addEventListener('mouseleave', onMouseLeave);
-    });
+    document.addEventListener('mouseover', handleMouseOver);
 
     return () => {
       window.removeEventListener('mousemove', onMouseMove);
-      interactiveElements.forEach(el => {
-        el.removeEventListener('mouseenter', onMouseEnter);
-        el.removeEventListener('mouseleave', onMouseLeave);
-      });
+      document.removeEventListener('mouseover', handleMouseOver);
+      cancelAnimationFrame(animationFrameId);
     };
   }, []);
 
@@ -53,11 +67,11 @@ export default function CustomCursor() {
     <>
       <div
         ref={cursorRef}
-        className="fixed w-2 h-2 bg-white rounded-full pointer-events-none z-[9999] mix-blend-difference transition-transform duration-100 ease-out hidden md:block"
+        className="fixed w-2 h-2 bg-white rounded-full pointer-events-none z-[9999] mix-blend-difference hidden md:block"
       />
       <div
         ref={followerRef}
-        className="fixed w-10 h-10 border border-white/30 rounded-full pointer-events-none z-[9998] transition-transform duration-150 ease-out hidden md:block"
+        className="fixed w-10 h-10 border border-white/30 rounded-full pointer-events-none z-[9998] transition-colors duration-300 hidden md:block"
       />
     </>
   );
