@@ -1,79 +1,100 @@
-import { useState, type CSSProperties } from 'react';
-import { ArrowUpRight, ArrowRight, ArrowLeft, Menu, X, Check, MessageCircle } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { ArrowUpRight, ArrowDown, Check, Copy, Menu, X, Plus, Minus, MessageCircle, Code2, Layers, Search, Wrench } from 'lucide-react';
 import portrait from './assets/isiah-dane-about.jpg';
 
+const emailAddress = 'igeguera@gmail.com';
+const emailLink = `mailto:${emailAddress}?subject=Let%E2%80%99s%20talk%20about%20my%20website`;
 const projects = [
-  {name:'Folisim Australia', domain:'www.folisim.com.au', category:'Beauty & aesthetics', label:'Scalp micropigmentation · Australia', color:'#46554a'},
-  {name:'Wolfcrete', domain:'wolfcreteky.com', category:'Local services', label:'Concrete services · United States', color:'#5d6556'},
-  {name:'Diana Marie Aesthetics', domain:'www.dianamarie.co.uk', category:'Beauty & aesthetics', label:'Aesthetics · United Kingdom', color:'#8b6d68'},
-  {name:'Inked Beauty Bar', domain:'inkedbeautybar.net', category:'Beauty & aesthetics', label:'Beauty · United States', color:'#624b58'},
-  {name:'Lucie Oliver Aesthetics', domain:'lucieoliveraesthetics.co.uk', category:'Beauty & aesthetics', label:'Aesthetics · United Kingdom', color:'#6b6a5d'},
-  {name:'GO Destination Services', domain:'godestinationservices.com', category:'Corporate', label:'Destination services · United States', color:'#334c68'},
+  {id:'folisim',name:'Folisim Australia',type:'Beauty & aesthetics',location:'Australia',domain:'www.folisim.com.au',image:'folisim',description:'A specialist clinic website with a clear introduction to scalp micropigmentation, treatment information, and consultation enquiries.',tags:['Web design','WordPress'],tone:'sage'},
+  {id:'inked',name:'Inked Beauty Bar',type:'Beauty & aesthetics',location:'United States',domain:'inkedbeautybar.net',image:'inked',description:'A distinctive online presence for permanent makeup, treatments, and training, with the brand’s personality at the forefront.',tags:['Web design','Responsive layouts'],tone:'rose'},
+  {id:'wolfcrete',name:'Wolfcrete',type:'Local services',location:'United States',domain:'wolfcreteky.com',image:'wolfcrete',description:'A service business website that brings concrete flooring expertise, service information, and quote enquiries together.',tags:['WordPress','Service website'],tone:'sand'},
+  {id:'go',name:'GO Destination Services',type:'Corporate',location:'United States',domain:'godestinationservices.com',image:'go',description:'A corporate website introducing relocation and destination services through a clear, professional browsing experience.',tags:['Web design','Corporate website'],tone:'blue'},
 ];
-const screenshots: Record<string,string> = {'www.folisim.com.au':'folisim','wolfcreteky.com':'wolfcrete','www.dianamarie.co.uk':'diana','inkedbeautybar.net':'inked','lucieoliveraesthetics.co.uk':'lucie','godestinationservices.com':'go'};
-const categories = ['All work','Beauty & aesthetics','Local services','Corporate'];
+const filters = ['All projects','Beauty & aesthetics','Local services','Corporate'];
 const services = [
-  ['Design a new website','A clear, modern WordPress website built around your business and the people you want to reach.'],
-  ['Give my current site a refresh','Sharper layouts, clearer messaging, and a mobile experience that feels considered from start to finish.'],
-  ['Build a landing page','A focused page for one service or campaign, with a clear path from first visit to enquiry.'],
-  ['Improve my website’s SEO','Technical and on-page improvements to help search engines understand your site and visitors find their way.'],
-  ['Keep my WordPress site running','Ongoing updates, troubleshooting, and practical improvements as your business grows.'],
+  {icon:Layers,title:'Web design & WordPress',number:'01',summary:'From a blank canvas to a website that feels like you.',text:'Thoughtful layouts, clear page structure, and responsive WordPress builds. I work with Elementor, Divi, and Salient, and can build from your brand guide or help shape a new direction.',tags:'ELEMENTOR / DIVI / SALIENT'},
+  {icon:Code2,title:'Landing pages & redesigns',number:'02',summary:'A stronger first impression. A clearer next step.',text:'Focused landing pages for a service or campaign, and considered redesigns for websites that need a fresh start. Built around your message, your visitors, and the action you want them to take.',tags:'LANDING PAGES / UI DESIGN / RESPONSIVE BUILDS'},
+  {icon:Search,title:'SEO & site improvements',number:'03',summary:'The details that make a website easier to find and use.',text:'Practical on-page SEO, technical improvements, and performance work. From heading structure and metadata to mobile usability, I help make your website clearer for people and search engines.',tags:'ON-PAGE SEO / TECHNICAL SEO / PERFORMANCE'},
+  {icon:Wrench,title:'Ongoing website support',number:'04',summary:'A reliable pair of hands after launch, too.',text:'Plugin and theme updates, backups, troubleshooting, and everyday changes. Useful support for business owners and agencies who want someone to take care of the website details.',tags:'MAINTENANCE / TROUBLESHOOTING / AGENCY SUPPORT'},
 ];
-function ProjectImage({domain, name, mobile = false}:{domain:string;name:string;mobile?:boolean}) {
-  const [failed,setFailed] = useState(false);
-  return <div className={`project-image ${mobile ? 'mobile-image' : ''}`}>
-    <div className="image-fallback"><span>SELECTED WEBSITE</span><strong>{name}</strong><a href={`https://${domain}`} target="_blank" rel="noreferrer">Explore the live website <ArrowUpRight size={18}/></a></div>
-    {!failed && <img src={`./projects/${screenshots[domain]}.webp`} alt={`${name} website preview`} onError={()=>setFailed(true)} loading="eager" />}
-  </div>;
+function useReveals() {
+  useEffect(()=>{
+    const nodes = document.querySelectorAll<HTMLElement>('[data-reveal]');
+    if (!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const observer = new IntersectionObserver(entries=>entries.forEach(entry=>{
+      if(entry.isIntersecting){entry.target.classList.add('is-visible');observer.unobserve(entry.target);}
+    }),{threshold:0.08});
+    nodes.forEach(node=>{node.classList.add('will-reveal');observer.observe(node);});
+    return ()=>{observer.disconnect();nodes.forEach(node=>node.classList.remove('will-reveal'));};
+  },[]);
 }
-export default function App() {
-  const [category,setCategory] = useState('All work');
-  const [index,setIndex] = useState(0);
-  const [menu,setMenu] = useState(false);
-  const [service,setService] = useState<number|null>(null);
-  const filtered = projects.filter(p=>category==='All work'||p.category===category);
-  const project = filtered[index % filtered.length];
-  const move = (direction:number)=>setIndex(i=>(i+direction+filtered.length)%filtered.length);
-  const email = (subject:string)=>`mailto:igeguera@gmail.com?subject=${encodeURIComponent(subject)}`;
+function ProjectCard({project,index}:{project:typeof projects[number];index:number}) {
+  return <article className={`project-card ${project.tone}`}>
+    <a className="project-visual" href={`https://${project.domain}`} target="_blank" rel="noreferrer" aria-label={`Visit ${project.name} website (opens in a new tab)`}>
+      <span className="project-index">SELECTED WORK / 0{index+1}</span>
+      <div className="site-preview"><div className="preview-toolbar"><span><i/><i/><i/></span><span>{project.domain}</span><span className="toolbar-lock">↗</span></div><img src={`./projects/${project.image}.webp`} alt={`${project.name} homepage design`} loading="lazy" width="1440" height="900"/></div>
+      <span className="view-project">View website <ArrowUpRight size={17}/></span>
+    </a>
+    <div className="project-details"><div><p>{project.type} <span>·</span> {project.location}</p><h3><a href={`https://${project.domain}`} target="_blank" rel="noreferrer">{project.name}</a></h3></div><a className="project-arrow" href={`https://${project.domain}`} target="_blank" rel="noreferrer" aria-label={`Open ${project.name} website`}><ArrowUpRight size={23}/></a></div>
+    <p className="project-description">{project.description}</p>
+    <div className="project-tags">{project.tags.map(tag=><span key={tag}>{tag}</span>)}</div>
+  </article>;
+}
+function ContactDialog({onClose}:{onClose:()=>void}){
+  const dialog = useRef<HTMLDialogElement>(null);
+  const [name,setName]=useState('');const [project,setProject]=useState('');const [website,setWebsite]=useState('');
+  useEffect(()=>{const node=dialog.current;if(node&&!node.open)node.showModal();},[]);
+  return <dialog ref={dialog} className="brief-dialog" onClose={onClose} onClick={event=>{if(event.target===dialog.current)onClose();}} aria-labelledby="brief-title">
+    <div className="brief-heading"><span className="eyebrow">LET’S START WITH YOUR IDEA</span><button className="icon-button" onClick={onClose} aria-label="Close project enquiry"><X size={22}/></button></div>
+    <h2 id="brief-title">What are you<br/><em>working on?</em></h2>
+    <p>A few details are all we need to start a conversation.</p>
+    <form onSubmit={event=>{event.preventDefault();const body=`Hi Isiah,\n\nI'm ${name.trim()}.\n\n${project.trim()}\n\nCurrent website: ${website.trim()||'Not yet'}\n\nThanks,\n${name.trim()}`;window.location.href=`mailto:${emailAddress}?subject=${encodeURIComponent(`Website project from ${name.trim()}`)}&body=${encodeURIComponent(body)}`;}}>
+      <label>Your name<input required maxLength={100} name="name" autoComplete="name" value={name} onChange={e=>setName(e.target.value)} placeholder="What should I call you?"/></label>
+      <label>Current website <span>(optional)</span><input type="url" name="website" autoComplete="url" placeholder="https://yourwebsite.com" value={website} onChange={e=>setWebsite(e.target.value)}/></label>
+      <label>Tell me about your project<textarea required maxLength={3000} name="project" rows={4} placeholder="A new website, a redesign, a little help with WordPress…" value={project} onChange={e=>setProject(e.target.value)}/></label>
+      <button className="button button-mint" type="submit">Continue in email <ArrowUpRight size={18}/></button>
+      <p className="form-note">Opens your email app with your details filled in. Nothing is sent until you send the email.</p>
+    </form>
+    <a className="dialog-email" href={emailLink}>Or email me directly at {emailAddress}</a>
+  </dialog>;
+}
+export default function App(){
+  const [menu,setMenu]=useState(false);const [filter,setFilter]=useState('All projects');const [activeService,setActiveService]=useState<number|null>(0);const [brief,setBrief]=useState(false);const [copied,setCopied]=useState(false);const [copyFailed,setCopyFailed]=useState(false);
+  const copyTimer=useRef<ReturnType<typeof setTimeout>|null>(null);
+  useReveals();
+  useEffect(()=>()=>{if(copyTimer.current)clearTimeout(copyTimer.current);},[]);
+  const filtered=projects.filter(p=>filter==='All projects'||p.type===filter);
+  async function copyEmail(){try{await navigator.clipboard.writeText(emailAddress);setCopied(true);setCopyFailed(false);if(copyTimer.current)clearTimeout(copyTimer.current);copyTimer.current=setTimeout(()=>setCopied(false),2500);}catch{setCopyFailed(true);}}
+  function openBrief(){setMenu(false);setBrief(true);}
   return <>
     <a className="skip-link" href="#main">Skip to content</a>
-    <header className="site-header"><div className="header-inner">
-      <a className="wordmark" href="#main" aria-label="Isiah Dane home">isiah<span>.dane</span></a>
-      <button className="menu-button" aria-label={menu?'Close navigation':'Open navigation'} aria-expanded={menu} aria-controls="navigation" onClick={()=>setMenu(!menu)}>{menu?<X/>:<Menu/>}</button>
-      <nav id="navigation" className={menu?'navigation open':'navigation'} aria-label="Main navigation">
-        <a href="#services" onClick={()=>setMenu(false)}>What I do</a><a href="#work" onClick={()=>setMenu(false)}>Selected work</a><a href="#about" onClick={()=>setMenu(false)}>About me</a><a className="button small" href={email('Let’s talk about my website')}>Let’s talk <ArrowUpRight size={16}/></a>
-      </nav>
-    </div></header>
+    <header className="site-header"><div className="container nav-inner"><a className="brand" href="#main" aria-label="Isiah Dane Geguera home">isiah<span className="brand-star" aria-hidden="true">✳</span></a>
+      <button className="menu-toggle" aria-label={menu?'Close navigation':'Open navigation'} aria-expanded={menu} aria-controls="main-navigation" onClick={()=>setMenu(!menu)}>{menu?<X/>:<Menu/>}</button>
+      <nav id="main-navigation" className={menu?'main-nav is-open':'main-nav'} aria-label="Main navigation"><a href="#work" onClick={()=>setMenu(false)}>Work<span>04</span></a><a href="#expertise" onClick={()=>setMenu(false)}>What I do</a><a href="#about" onClick={()=>setMenu(false)}>About</a><button className="nav-contact" onClick={openBrief}>Let’s talk <ArrowUpRight size={17}/></button></nav></div></header>
     <main id="main">
-      <section className="hero wrap" aria-labelledby="hero-title">
-        <div className="intro">
-          <p className="eyebrow"><span className="status-dot"/> INDEPENDENT WEB DESIGNER · PHILIPPINES</p>
-          <h1 id="hero-title">Good websites.<br/>Made <span>personal.</span></h1>
-          <p className="hero-description">I’m Isiah. I build clear, thoughtful WordPress websites that help businesses make a better first impression—and make the next step easy.</p>
-          <div className="service-list" id="services"><h2>What can I help you with?</h2>
-            {services.map(([title,description],i)=><div className="service" key={title}>
-              <button aria-expanded={service===i} aria-controls={`service-${i}`} onClick={()=>setService(service===i?null:i)}><span>{title}</span><ArrowUpRight size={20}/></button>
-              {service===i&&<div className="service-detail" id={`service-${i}`}><p>{description}</p><a href={email(title)}>Tell me about your project <ArrowRight size={15}/></a></div>}
-            </div>)}
-          </div>
-          <p className="intro-note">You bring the idea. I’ll take care of the website.</p>
-        </div>
-        <div className="work-showcase" id="work">
-          <div className="showcase-heading"><span className="eyebrow">A FEW THINGS I’VE BUILT</span><span className="work-count">0{projects.length} PROJECTS</span></div>
-          <div className="filters" aria-label="Filter projects">{categories.map(c=><button key={c} aria-pressed={category===c} className={category===c?'active':''} onClick={()=>{setCategory(c);setIndex(0)}}>{c}</button>)}</div>
-          <div className="device-stage" style={{'--project-color':project.color} as CSSProperties}>
-            <div className="stage-number" aria-hidden="true">0{projects.indexOf(project)+1}</div>
-            <div className="laptop" key={project.domain}><div className="laptop-screen"><div className="browser-bar"><div className="browser-dots"><i/><i/><i/></div><span>{project.domain}</span><ArrowUpRight size={11}/></div><ProjectImage domain={project.domain} name={project.name}/></div><div className="laptop-base"><span/></div></div>
-            <div className="phone" aria-hidden="true"><div className="phone-notch"/><ProjectImage key={project.domain} domain={project.domain} name={project.name} mobile/></div>
-            <div className="stage-label">DESIGNED TO WORK. ON EVERY SCREEN.</div>
-          </div>
-          <div className="project-caption" aria-live="polite" aria-atomic="true"><div className="carousel-controls"><button aria-label="Previous project" onClick={()=>move(-1)}><ArrowLeft size={18}/></button><span>{String(index+1).padStart(2,'0')} / {String(filtered.length).padStart(2,'0')}</span><button aria-label="Next project" onClick={()=>move(1)}><ArrowRight size={18}/></button></div><div className="project-info"><h2>{project.name}</h2><p>{project.label}</p><a href={`https://${project.domain}`} target="_blank" rel="noreferrer">Visit website <ArrowUpRight size={14}/></a></div></div>
-        </div>
+      <section className="hero container" aria-labelledby="hero-title"><div className="hero-top"><p className="eyebrow">ISIAH DANE GEGUERA <span>—</span> WEB DESIGNER & DEVELOPER</p><span className="availability"><i/> Open to projects & agency work</span></div>
+        <div className="hero-grid"><div className="hero-copy"><h1 id="hero-title">Thoughtful design.<br/>Websites that<br/><em>mean business.</em></h1><p className="hero-intro">I turn ideas into distinctive WordPress websites.<br className="desktop-break"/> Built with care. Easy to use. Ready for what’s next.</p><div className="hero-actions"><a className="button button-mint" href="#work">Explore my work <ArrowDown size={18}/></a><button className="button button-text" onClick={openBrief}>Have a project? <ArrowUpRight size={18}/></button></div><div className="hero-person"><img src={portrait} alt="" width="42" height="42"/><div><span>Your designer. Your developer.</span><p>One person who cares about both.</p></div></div></div>
+        <div className="hero-art" aria-label="A selection of my website projects"><div className="art-cross cross-one" aria-hidden="true">+</div><div className="art-cross cross-two" aria-hidden="true">+</div><div className="art-coordinate" aria-hidden="true">DESIGN ↔ DEVELOPMENT</div>
+          <a className="hero-preview hero-preview-back" href="https://inkedbeautybar.net" target="_blank" rel="noreferrer" aria-label="Visit Inked Beauty Bar website"><div className="art-browser"><span>● ● ●</span><span>inkedbeautybar.net</span><ArrowUpRight size={11}/></div><img src="./projects/inked.webp" alt="Inked Beauty Bar website design" width="1440" height="900" fetchPriority="high"/></a>
+          <a className="hero-preview hero-preview-front" href="https://www.folisim.com.au" target="_blank" rel="noreferrer" aria-label="Visit Folisim Australia website"><div className="art-browser"><span>● ● ●</span><span>folisim.com.au</span><ArrowUpRight size={11}/></div><img src="./projects/folisim.webp" alt="Folisim Australia website design" width="1440" height="900" fetchPriority="high"/><div className="art-project-label"><span>Folisim Australia</span><ArrowUpRight size={15}/></div></a>
+          <div className="experience-stamp"><span>9<span>+</span></span><p>YEARS OF<br/>MAKING IT WORK</p><span className="stamp-spark" aria-hidden="true">✳</span></div><span className="art-footnote">A LITTLE TASTE OF WHAT I DO ↗</span>
+        </div></div>
+        <div className="hero-bottom"><span>BASED IN THE PHILIPPINES. WORKING EVERYWHERE.</span><span className="scroll-cue">SCROLL TO EXPLORE <ArrowDown size={13}/></span></div>
       </section>
-      <div className="credentials"><div className="wrap credential-inner"><span><Check size={18}/><strong>9+ years</strong> of hands-on experience</span><span><Check size={18}/>WordPress · Elementor · Divi · Salient</span><span><Check size={18}/>Working with clients in the US, UK & Australia</span></div></div>
-      <section className="about-section wrap" id="about"><div className="portrait-wrap"><img src={portrait} alt="Isiah Dane Geguera with his dog" loading="lazy"/><span>THE PERSON BEHIND THE PIXELS</span></div><div className="about-copy"><p className="eyebrow">A DESIGNER. A BUILDER. YOUR EXTRA PAIR OF HANDS.</p><h2>Good work starts with<br/>someone who cares.</h2><p>I’m Isiah Dane Geguera, a WordPress designer and developer based in the Philippines. For over nine years, I’ve helped businesses and agencies turn ideas into websites that are easy to use and easy to manage.</p><p>From a fresh Elementor build to the small fixes on an existing site, I bring the same attention to the details. You work directly with me, with clear updates and a practical approach.</p><a className="text-link" href={email('I’d like to work with you')}>Let’s build something useful <ArrowUpRight size={18}/></a></div></section>
-      <section className="contact-section" id="contact"><div className="wrap contact-inner"><div><p className="eyebrow">HAVE A PROJECT IN MIND?</p><h2>Let’s make it happen.</h2><p>Send me your website, your idea, or simply where you’re stuck.</p></div><a className="button" href={email('A website project for Isiah')}>Tell me about it <ArrowUpRight size={20}/></a></div></section>
+      <div className="tools-strip"><div className="container tools-inner"><span className="tool-label">MY EVERYDAY TOOLKIT</span><span>WordPress</span><span>Elementor</span><span>Divi</span><span>Salient</span><span>SEO</span><span className="tools-end">Good tools. Better attention to detail.</span></div></div>
+      <section className="work-section container section-space" id="work"><div className="section-heading" data-reveal><div><p className="eyebrow"><span className="section-number">01 /</span> SELECTED WORK</p><h2>Different businesses.<br/><span>The same attention to detail.</span></h2></div><p className="section-aside">A selection of websites I’ve worked on.<br/>Made for real businesses, and real people.</p></div>
+        <div className="work-toolbar"><div className="work-filters" aria-label="Filter selected work">{filters.map(f=><button key={f} className={filter===f?'active':''} aria-pressed={filter===f} onClick={()=>setFilter(f)}>{f}{f==='All projects'?<span>04</span>:null}</button>)}</div><span className="filter-result" role="status">{filtered.length} {filtered.length===1?'project':'projects'}</span></div>
+        <div className="project-grid">{filtered.map(p=><ProjectCard key={p.id} project={p} index={projects.indexOf(p)}/>)}</div>
+        <div className="work-note"><p>One more to explore: <a href="https://lucieoliveraesthetics.co.uk" target="_blank" rel="noreferrer">Lucie Oliver Aesthetics <ArrowUpRight size={14}/></a></p><span>YOUR PROJECT COULD BE NEXT.</span></div>
+      </section>
+      <section className="expertise-section" id="expertise"><div className="container section-space"><div className="section-heading" data-reveal><div><p className="eyebrow"><span className="section-number">02 /</span> WHAT I BRING TO THE TABLE</p><h2>A good-looking website<br/><span>is just the beginning.</span></h2></div><p className="section-aside">Design, build, improve, and keep it running.<br/>I can help with the whole picture.</p></div>
+        <div className="service-rows">{services.map((s,i)=><article className={activeService===i?'service-row expanded':'service-row'} key={s.number}><h3><button aria-expanded={activeService===i} aria-controls={`service-detail-${i}`} onClick={()=>setActiveService(activeService===i?null:i)}><span className="service-number">{s.number}</span><s.icon className="service-icon" size={23}/><span className="service-title">{s.title}</span><span className="service-summary">{s.summary}</span><span className="service-expand">{activeService===i?<Minus size={19}/>:<Plus size={19}/>}</span></button></h3><div id={`service-detail-${i}`} className="service-detail" hidden={activeService!==i}><p>{s.text}</p><span className="service-tags">{s.tags}</span></div></article>)}</div>
+      </div></section>
+      <section className="about-section container section-space" id="about"><div className="about-photo" data-reveal><img src={portrait} alt="Isiah Dane Geguera with his dog" width="640" height="720" loading="lazy"/><div className="photo-caption"><span>OFF-SCREEN, THAT’S ME.</span><span>AND MY LITTLE ASSISTANT ↗</span></div><div className="photo-note">A real person.<br/><em>In your corner.</em></div></div><div className="about-copy" data-reveal><p className="eyebrow"><span className="section-number">03 /</span> THE PERSON BEHIND THE WORK</p><h2>Hey, I’m Isiah.<br/><span>I make things<br/>work. And look good.</span></h2><p>I’m a WordPress designer and developer based in the Philippines, with over nine years of experience working with clients in the US, UK, and Australia.</p><p>I’m happiest turning a rough idea into something clear, useful, and thoughtfully built. Whether you’re a business owner who needs a new website or an agency looking for an extra pair of hands, you’ll work directly with me from start to finish.</p><div className="about-values"><span><Check size={15}/> Clear communication</span><span><Check size={15}/> Care in the details</span><span><Check size={15}/> Support beyond launch</span></div><button className="text-link" onClick={openBrief}>Let’s see what we can build <ArrowUpRight size={19}/></button></div></section>
+      <section className="process-section container"><div className="process-intro"><p className="eyebrow">NO MYSTERY. NO OVERCOMPLICATION.</p><h2>Good work.<br/>A simple process.</h2></div><div className="process-step"><span>01</span><h3>We talk.</h3><p>Your goals, your audience, and what you need your website to do.</p></div><div className="process-step"><span>02</span><h3>I build.</h3><p>Design and development, with clear updates and room for your feedback.</p></div><div className="process-step"><span>03</span><h3>We launch.</h3><p>Final checks, a smooth handover, and a website you’re happy to share.</p></div></section>
+      <section className="contact-section" id="contact"><div className="container contact-inner" data-reveal><div className="contact-topline"><p className="eyebrow">GOT SOMETHING IN MIND?</p><span className="availability"><i/> Let’s make room for it.</span></div><h2>Let’s make<br/><em>your next move.</em><span aria-hidden="true">↗</span></h2><div className="contact-bottom"><p>A new website. A better one. A dependable creative partner.<br/>Start with a hello, and we’ll take it from there.</p><button className="button button-dark" onClick={openBrief}>Tell me about your project <ArrowUpRight size={19}/></button></div><div className="direct-contact"><a href={emailLink}>{emailAddress}</a><button onClick={copyEmail} className="copy-email" aria-label={copied?'Email address copied':'Copy email address'}>{copied?<Check size={16}/>:<Copy size={16}/>}<span>{copied?'Copied!':'Copy'}</span></button><span className="copy-status" role="status">{copyFailed?'Please select and copy the email address above.':copied?'Email address copied to clipboard.':''}</span></div></div></section>
     </main>
-    <footer className="footer"><div className="wrap footer-inner"><a className="wordmark" href="#main">isiah<span>.dane</span></a><span>© {new Date().getFullYear()} Isiah Dane Geguera</span><a href="mailto:igeguera@gmail.com">igeguera@gmail.com <ArrowUpRight size={14}/></a><a href="https://wa.me/639772655441" target="_blank" rel="noreferrer"><MessageCircle size={17}/> WhatsApp</a><a href="https://github.com/Isiah-19" target="_blank" rel="noreferrer">GitHub <ArrowUpRight size={14}/></a></div></footer>
+    <footer className="site-footer"><div className="container footer-inner"><a className="brand" href="#main" aria-label="Back to top">isiah<span className="brand-star" aria-hidden="true">✳</span></a><p>Thoughtfully designed. Carefully built.</p><div className="footer-links"><a href="https://wa.me/639772655441" target="_blank" rel="noreferrer"><MessageCircle size={14}/>WhatsApp <ArrowUpRight size={13}/></a><a href="https://github.com/Isiah-19" target="_blank" rel="noreferrer">GitHub <ArrowUpRight size={13}/></a><a href="#main">Back to top ↑</a></div><span className="copyright">© {new Date().getFullYear()} Isiah Dane Geguera</span></div></footer>
+    {brief?<ContactDialog onClose={()=>setBrief(false)}/>:null}
   </>;
 }
