@@ -1,16 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { ArrowUpRight, ArrowDown, Check, Copy, Menu, X, Plus, Minus, MessageCircle, Code2, Layers, Search, Wrench } from 'lucide-react';
 import portrait from './assets/isiah-dane-about.jpg';
+import { projects, filters, pageSize, type Project } from './data/projects';
 
 const emailAddress = 'igeguera@gmail.com';
 const emailLink = `mailto:${emailAddress}?subject=Let%E2%80%99s%20talk%20about%20my%20website`;
-const projects = [
-  {id:'folisim',name:'Folisim Australia',type:'Beauty & aesthetics',location:'Australia',domain:'www.folisim.com.au',image:'folisim',description:'A specialist clinic website with a clear introduction to scalp micropigmentation, treatment information, and consultation enquiries.',tags:['Web design','WordPress'],tone:'sage'},
-  {id:'inked',name:'Inked Beauty Bar',type:'Beauty & aesthetics',location:'United States',domain:'inkedbeautybar.net',image:'inked',description:'A distinctive online presence for permanent makeup, treatments, and training, with the brand’s personality at the forefront.',tags:['Web design','Responsive layouts'],tone:'rose'},
-  {id:'wolfcrete',name:'Wolfcrete',type:'Local services',location:'United States',domain:'wolfcreteky.com',image:'wolfcrete',description:'A service business website that brings concrete flooring expertise, service information, and quote enquiries together.',tags:['WordPress','Service website'],tone:'sand'},
-  {id:'go',name:'GO Destination Services',type:'Corporate',location:'United States',domain:'godestinationservices.com',image:'go',description:'A corporate website introducing relocation and destination services through a clear, professional browsing experience.',tags:['Web design','Corporate website'],tone:'blue'},
-];
-const filters = ['All projects','Beauty & aesthetics','Local services','Corporate'];
 const services = [
   {icon:Layers,title:'Web design & WordPress',number:'01',summary:'From a blank canvas to a website that feels like you.',text:'Thoughtful layouts, clear page structure, and responsive WordPress builds. I work with Elementor, Divi, and Salient, and can build from your brand guide or help shape a new direction.',tags:'ELEMENTOR / DIVI / SALIENT'},
   {icon:Code2,title:'Landing pages & redesigns',number:'02',summary:'A stronger first impression. A clearer next step.',text:'Focused landing pages for a service or campaign, and considered redesigns for websites that need a fresh start. Built around your message, your visitors, and the action you want them to take.',tags:'LANDING PAGES / UI DESIGN / RESPONSIVE BUILDS'},
@@ -28,11 +22,12 @@ function useReveals() {
     return ()=>{observer.disconnect();nodes.forEach(node=>node.classList.remove('will-reveal'));};
   },[]);
 }
-function ProjectCard({project,index}:{project:typeof projects[number];index:number}) {
-  return <article className={`project-card ${project.tone}`}>
+function ProjectCard({project,index}:{project:Project;index:number}) {
+  const [imageFailed,setImageFailed] = useState(false);
+  return <article id={`project-${project.id}`} tabIndex={-1} className={`project-card ${project.tone}`}>
     <a className="project-visual" href={`https://${project.domain}`} target="_blank" rel="noreferrer" aria-label={`Visit ${project.name} website (opens in a new tab)`}>
-      <span className="project-index">SELECTED WORK / 0{index+1}</span>
-      <div className="site-preview"><div className="preview-toolbar"><span><i/><i/><i/></span><span>{project.domain}</span><span className="toolbar-lock">↗</span></div><img src={`./projects/${project.image}.webp`} alt={`${project.name} homepage design`} loading="lazy" width="1440" height="900"/></div>
+      <span className="project-index">SELECTED WORK / {String(index+1).padStart(2,'0')}</span>
+      <div className="site-preview"><div className="preview-toolbar"><span><i/><i/><i/></span><span>{project.domain}</span><span className="toolbar-lock">↗</span></div><div className="project-capture">{project.image&&!imageFailed?<img src={`./projects/${project.image}.webp`} alt={`${project.name} homepage design`} loading="lazy" width="1440" height="900" onError={()=>setImageFailed(true)}/>:<div className="project-placeholder"><span>{project.type}</span><strong>{project.name}</strong><span>Explore the live website <ArrowUpRight size={18}/></span></div>}</div></div>
       <span className="view-project">View website <ArrowUpRight size={17}/></span>
     </a>
     <div className="project-details"><div><p>{project.type} <span>·</span> {project.location}</p><h3><a href={`https://${project.domain}`} target="_blank" rel="noreferrer">{project.name}</a></h3></div><a className="project-arrow" href={`https://${project.domain}`} target="_blank" rel="noreferrer" aria-label={`Open ${project.name} website`}><ArrowUpRight size={23}/></a></div>
@@ -60,17 +55,21 @@ function ContactDialog({onClose}:{onClose:()=>void}){
 }
 export default function App(){
   const [menu,setMenu]=useState(false);const [filter,setFilter]=useState('All projects');const [activeService,setActiveService]=useState<number|null>(0);const [brief,setBrief]=useState(false);const [copied,setCopied]=useState(false);const [copyFailed,setCopyFailed]=useState(false);
+  const [visibleCount,setVisibleCount] = useState(pageSize);
   const copyTimer=useRef<ReturnType<typeof setTimeout>|null>(null);
   useReveals();
   useEffect(()=>()=>{if(copyTimer.current)clearTimeout(copyTimer.current);},[]);
   const filtered=projects.filter(p=>filter==='All projects'||p.type===filter);
+  const visibleProjects=filtered.slice(0,visibleCount);
+  function chooseFilter(value:string){setFilter(value);setVisibleCount(pageSize);}
+  function showMoreProjects(){const nextProject=filtered[visibleCount];setVisibleCount(count=>count+pageSize);if(nextProject)requestAnimationFrame(()=>document.getElementById(`project-${nextProject.id}`)?.focus({preventScroll:true}));}
   async function copyEmail(){try{await navigator.clipboard.writeText(emailAddress);setCopied(true);setCopyFailed(false);if(copyTimer.current)clearTimeout(copyTimer.current);copyTimer.current=setTimeout(()=>setCopied(false),2500);}catch{setCopyFailed(true);}}
   function openBrief(){setMenu(false);setBrief(true);}
   return <>
     <a className="skip-link" href="#main">Skip to content</a>
     <header className="site-header"><div className="container nav-inner"><a className="brand" href="#main" aria-label="Isiah Dane Geguera home">isiah<span className="brand-star" aria-hidden="true">✳</span></a>
       <button className="menu-toggle" aria-label={menu?'Close navigation':'Open navigation'} aria-expanded={menu} aria-controls="main-navigation" onClick={()=>setMenu(!menu)}>{menu?<X/>:<Menu/>}</button>
-      <nav id="main-navigation" className={menu?'main-nav is-open':'main-nav'} aria-label="Main navigation"><a href="#work" onClick={()=>setMenu(false)}>Work<span>04</span></a><a href="#expertise" onClick={()=>setMenu(false)}>What I do</a><a href="#about" onClick={()=>setMenu(false)}>About</a><button className="nav-contact" onClick={openBrief}>Let’s talk <ArrowUpRight size={17}/></button></nav></div></header>
+      <nav id="main-navigation" className={menu?'main-nav is-open':'main-nav'} aria-label="Main navigation"><a href="#work" onClick={()=>setMenu(false)}>Work<span>{projects.length}</span></a><a href="#expertise" onClick={()=>setMenu(false)}>What I do</a><a href="#about" onClick={()=>setMenu(false)}>About</a><button className="nav-contact" onClick={openBrief}>Let’s talk <ArrowUpRight size={17}/></button></nav></div></header>
     <main id="main">
       <section className="hero container" aria-labelledby="hero-title"><div className="hero-top"><p className="eyebrow">ISIAH DANE GEGUERA <span>—</span> WEB DESIGNER & DEVELOPER</p><span className="availability"><i/> Open to projects & agency work</span></div>
         <div className="hero-grid"><div className="hero-copy"><h1 id="hero-title">Thoughtful design.<br/>Websites that<br/><em>mean business.</em></h1><p className="hero-intro">I turn ideas into distinctive WordPress websites.<br className="desktop-break"/> Built with care. Easy to use. Ready for what’s next.</p><div className="hero-actions"><a className="button button-mint" href="#work">Explore my work <ArrowDown size={18}/></a><button className="button button-text" onClick={openBrief}>Have a project? <ArrowUpRight size={18}/></button></div><div className="hero-person"><img src={portrait} alt="" width="42" height="42"/><div><span>Your designer. Your developer.</span><p>One person who cares about both.</p></div></div></div>
@@ -83,8 +82,9 @@ export default function App(){
       </section>
       <div className="tools-strip"><div className="container tools-inner"><span className="tool-label">MY EVERYDAY TOOLKIT</span><span>WordPress</span><span>Elementor</span><span>Divi</span><span>Salient</span><span>SEO</span><span className="tools-end">Good tools. Better attention to detail.</span></div></div>
       <section className="work-section container section-space" id="work"><div className="section-heading" data-reveal><div><p className="eyebrow"><span className="section-number">01 /</span> SELECTED WORK</p><h2>Different businesses.<br/><span>The same attention to detail.</span></h2></div><p className="section-aside">A selection of websites I’ve worked on.<br/>Made for real businesses, and real people.</p></div>
-        <div className="work-toolbar"><div className="work-filters" aria-label="Filter selected work">{filters.map(f=><button key={f} className={filter===f?'active':''} aria-pressed={filter===f} onClick={()=>setFilter(f)}>{f}{f==='All projects'?<span>04</span>:null}</button>)}</div><span className="filter-result" role="status">{filtered.length} {filtered.length===1?'project':'projects'}</span></div>
-        <div className="project-grid">{filtered.map(p=><ProjectCard key={p.id} project={p} index={projects.indexOf(p)}/>)}</div>
+        <div className="work-toolbar"><div className="work-filters" aria-label="Filter selected work">{filters.map(f=><button key={f} className={filter===f?'active':''} aria-pressed={filter===f} onClick={()=>chooseFilter(f)}>{f}<span>{f==='All projects'?projects.length:projects.filter(project=>project.type===f).length}</span></button>)}</div><span className="filter-result" role="status">{visibleProjects.length} of {filtered.length} {filtered.length===1?'project':'projects'}</span></div>
+        <div className="project-grid">{visibleProjects.map(p=><ProjectCard key={p.id} project={p} index={projects.indexOf(p)}/>)}</div>
+        <div className="gallery-footer"><p role="status">Showing {visibleProjects.length} of {filtered.length} {filter==='All projects'?(filtered.length===1?'project':'projects'):`${filter.toLowerCase()} ${filtered.length===1?'project':'projects'}`}</p>{visibleCount<filtered.length?<button className="button button-outline" onClick={showMoreProjects}>Show more projects <Plus size={17}/></button>:<span className="gallery-complete"><Check size={14}/> All projects in this selection shown</span>}</div>
         <div className="work-note"><p>One more to explore: <a href="https://lucieoliveraesthetics.co.uk" target="_blank" rel="noreferrer">Lucie Oliver Aesthetics <ArrowUpRight size={14}/></a></p><span>YOUR PROJECT COULD BE NEXT.</span></div>
       </section>
       <section className="expertise-section" id="expertise"><div className="container section-space"><div className="section-heading" data-reveal><div><p className="eyebrow"><span className="section-number">02 /</span> WHAT I BRING TO THE TABLE</p><h2>A good-looking website<br/><span>is just the beginning.</span></h2></div><p className="section-aside">Design, build, improve, and keep it running.<br/>I can help with the whole picture.</p></div>
