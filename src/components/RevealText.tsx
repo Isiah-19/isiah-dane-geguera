@@ -26,7 +26,7 @@ export default function RevealText({ text, className = "", delay = 0, as: Compon
       opacity: 1,
       y: 0,
       transition: {
-        type: "spring",
+        type: "spring" as const,
         damping: 12,
         stiffness: 100,
       },
@@ -35,7 +35,7 @@ export default function RevealText({ text, className = "", delay = 0, as: Compon
       opacity: 0,
       y: "120%",
       transition: {
-        type: "spring",
+        type: "spring" as const,
         damping: 12,
         stiffness: 100,
       },
