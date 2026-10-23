@@ -1,0 +1,29 @@
+.enquiry-fields { display: grid; gap: 18px; border: 0; padding: 0; margin: 0; min-width: 0; }
+.enquiry-person { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.enquiry-person > label { min-width: 0; }
+.enquiry-honey { display: none; }
+.brief-dialog button:disabled { cursor: wait; opacity: .65; }
+.enquiry-fields:disabled { opacity: .7; }
+.enquiry-error { padding: 14px 16px; background: #f0efeb; border: 1px solid #cecdc5; border-radius: 4px; font-size: 12px; line-height: 1.7; }
+.enquiry-error a { display: inline-flex; align-items: center; gap: 8px; margin-top: 8px; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+.enquiry-spinner { animation: enquiry-spin 1s linear infinite; }
+.enquiry-submit { width: 100%; }
+.enquiry-success { padding-block: 24px 9px; }
+.enquiry-success-icon { display: grid; place-items: center; width: 52px; height: 52px; border: 1px solid #d8d8d0; border-radius: 50%; background: #eeeee9; }
+.enquiry-success p { font-size: 14px; line-height: 1.8; color: var(--muted); margin-bottom: 25px; overflow-wrap: anywhere; }
+.enquiry-success strong { font-weight: 500; color: var(--ink); }
+.enquiry-success h2:focus { outline: none; }
+.enquiry-alternatives { display: flex; flex-direction: column; align-items: center; gap: 14px; margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--line); }
+.enquiry-alternatives > a { display: inline-flex; align-items: center; justify-content: center; gap: 7px; font-size: 11px; line-height: 1.7; }
+.enquiry-alternatives > a:hover { text-decoration: underline; text-underline-offset: 4px; }
+.contact-whatsapp { display: inline-flex; align-items: center; gap: 12px; margin-top: 24px; padding: 13px 16px; border: 1px solid #60605a; border-radius: 3px; font-size: 13px; line-height: 1.6; transition: background .25s, border-color .25s; }
+.contact-whatsapp span { display: flex; align-items: baseline; flex-wrap: wrap; gap: 5px 12px; }
+.contact-whatsapp small { font-size: 10px; color: #c9c9c1; }
+.contact-whatsapp:hover { background: #353532; border-color: #a6a69e; }
+@keyframes enquiry-spin { to { transform: rotate(360deg); } }
+@media (max-width: 480px) {
+  .enquiry-person { grid-template-columns: 1fr; gap: 18px; }
+  .enquiry-alternatives > a { font-size: 10px; }
+  .contact-whatsapp { font-size: 12px; }
+}
+@media (prefers-reduced-motion: reduce) { .enquiry-spinner { animation: none; } }
