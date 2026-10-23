@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
-import { ArrowUpRight, ArrowDown, Check, Copy, Menu, X, Plus, Minus, MessageCircle, Code2, Layers, Search, Wrench } from 'lucide-react';
+import { ArrowUpRight, Check, Copy, Menu, X, Plus, Minus, MessageCircle, Code2, Layers, Search, Wrench } from 'lucide-react';
 import portrait from './assets/isiah-dane-about.jpg';
+import Hero from './components/Hero';
 import { projects, filters, pageSize, type Project } from './data/projects';
 
 const emailAddress = 'igeguera@gmail.com';
@@ -151,26 +152,7 @@ export default function App(){
     <a className="skip-link" href="#main">Skip to content</a>
     <Header onContact={openBrief} />
     <main id="main">
-      <section className="hero container" id="intro" aria-labelledby="hero-title">
-        <div className="hero-top"><p className="eyebrow">ISIAH DANE GEGUERA <span>—</span> WEB DESIGNER & DEVELOPER</p><span className="availability"><i/> Open to projects & agency work</span></div>
-        <div className="hero-grid">
-          <div className="hero-copy"><h1 id="hero-title" aria-label="Thoughtful design. Websites that mean business."><span className="headline-line"><span>Thoughtful design.</span></span><span className="headline-line"><span>Websites that</span></span><span className="headline-line"><em>mean business.</em></span></h1></div>
-          <div className="hero-aside">
-            <div className="experience-stamp"><span>9<span>+</span></span><p>YEARS OF<br/>MAKING IT WORK</p><span className="stamp-spark" aria-hidden="true">✳</span></div>
-            <p className="hero-intro">I turn ideas into distinctive WordPress websites.<br className="desktop-break"/> Built with care. Easy to use. Ready for what’s next.</p>
-            <div className="hero-actions"><a className="button button-primary" href="#work">Explore my work <ArrowDown size={18}/></a><button className="button button-text" onClick={openBrief}>Have a project? <ArrowUpRight size={18}/></button></div>
-            <div className="hero-person"><img src={portrait} alt="" width="42" height="42"/><div><span>Your designer. Your developer.</span><p>One person who cares about both.</p></div></div>
-          </div>
-        </div>
-        <div className="hero-art" aria-label="A selection of my website projects">
-          <div className="art-topline"><span className="art-coordinate">DESIGN ↔ DEVELOPMENT</span><span className="art-footnote">A LITTLE TASTE OF WHAT I DO ↗</span></div>
-          <div className="hero-showcase">
-            <a className="hero-preview hero-preview-back" href="https://inkedbeautybar.net" target="_blank" rel="noreferrer" aria-label="Visit Inked Beauty Bar website (opens in a new tab)"><div className="art-browser"><span aria-hidden="true">● ● ●</span><span>inkedbeautybar.net</span><ArrowUpRight size={13}/></div><div className="hero-capture"><img src="./projects/inked.webp" alt="Inked Beauty Bar website design" width="1440" height="900" fetchPriority="high"/></div></a>
-            <a className="hero-preview hero-preview-front" href="https://www.folisim.com.au" target="_blank" rel="noreferrer" aria-label="Visit Folisim Australia website (opens in a new tab)"><div className="art-browser"><span aria-hidden="true">● ● ●</span><span>folisim.com.au</span><ArrowUpRight size={13}/></div><div className="hero-capture"><img src="./projects/folisim.webp" alt="Folisim Australia website design" width="1440" height="900" fetchPriority="high"/></div><div className="art-project-label"><span>Folisim Australia</span><ArrowUpRight size={15}/></div></a>
-          </div>
-        </div>
-        <div className="hero-bottom"><span>BASED IN THE PHILIPPINES. WORKING EVERYWHERE.</span><a href="#work" className="scroll-cue">SCROLL TO EXPLORE <ArrowDown size={13}/></a></div>
-      </section>
+      <Hero onContact={openBrief} />
       <div className="tools-strip"><div className="container tools-inner"><span className="tool-label">MY EVERYDAY TOOLKIT</span><span>WordPress</span><span>Shopify</span><span>Codex</span><span>Claude</span><span>Elementor</span><span>SEO</span><span>Automation</span><span className="tools-end">Good tools. Better attention to detail.</span></div></div>
       <section className="work-section container section-space" id="work"><div className="section-heading" data-reveal><div><p className="eyebrow"><span className="section-number">01 /</span> SELECTED WORK</p><h2>Different businesses.<br/><span>The same attention to detail.</span></h2></div><p className="section-aside">A selection of websites I’ve worked on.<br/>Made for real businesses, and real people.</p></div>
         <div className="work-toolbar"><div className="work-filters" role="group" aria-label="Filter selected work">{filters.map(f=><button key={f} className={filter===f?'active':''} aria-pressed={filter===f} aria-controls="project-results" onClick={()=>chooseFilter(f)}>{f}<span>{f==='All projects'?projects.length:projects.filter(project=>project.type===f).length}</span></button>)}</div><span className="filter-result" aria-hidden="true">{visibleProjects.length} of {filtered.length} {filtered.length===1?'project':'projects'}</span></div>
