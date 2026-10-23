@@ -2,10 +2,10 @@ import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { ArrowUpRight, Check, Copy, Menu, X, Plus, Minus, MessageCircle, Code2, Layers, Search, Wrench } from 'lucide-react';
 import portrait from './assets/isiah-dane-about.jpg';
 import Hero from './components/Hero';
+import ContactDialog from './components/ContactDialog';
+import { emailAddress, emailLink, whatsappLink, whatsappNumber } from './lib/contact';
 import { projects, filters, pageSize, type Project } from './data/projects';
 
-const emailAddress = 'igeguera@gmail.com';
-const emailLink = `mailto:${emailAddress}?subject=Let%E2%80%99s%20talk%20about%20my%20website`;
 const services = [
   {icon:Layers,title:'Web design & WordPress',number:'01',summary:'From a blank canvas to a website that feels like you.',text:'Thoughtful layouts, clear page structure, and responsive WordPress builds. I work with Elementor, Divi, and Salient, and can build from your brand guide or help shape a new direction.',tags:'ELEMENTOR / DIVI / SALIENT'},
   {icon:Code2,title:'Landing pages & redesigns',number:'02',summary:'A stronger first impression. A clearer next step.',text:'Focused landing pages for a service or campaign, and considered redesigns for websites that need a fresh start. Built around your message, your visitors, and the action you want them to take.',tags:'LANDING PAGES / UI DESIGN / RESPONSIVE BUILDS'},
@@ -92,28 +92,6 @@ function ProjectCard({project,index}:{project:Project;index:number}) {
     <div className="project-tags">{project.tags.map(tag=><span key={tag}>{tag}</span>)}</div>
   </article>;
 }
-function ContactDialog({onClose}:{onClose:()=>void}){
-  const dialog = useRef<HTMLDialogElement>(null);
-  const [name,setName]=useState('');const [project,setProject]=useState('');const [website,setWebsite]=useState('');
-  useEffect(()=>{const node=dialog.current;if(node&&!node.open)node.showModal();},[]);
-  return <dialog ref={dialog} className="brief-dialog" onClose={onClose} onClick={event=>{
-    if (event.target !== dialog.current) return;
-    const bounds = event.currentTarget.getBoundingClientRect();
-    if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) onClose();
-  }} aria-labelledby="brief-title">
-    <div className="brief-heading"><span className="eyebrow">LET’S START WITH YOUR IDEA</span><button className="icon-button" onClick={onClose} aria-label="Close project enquiry"><X size={22}/></button></div>
-    <h2 id="brief-title">What are you<br/><em>working on?</em></h2>
-    <p>A few details are all we need to start a conversation.</p>
-    <form onSubmit={event=>{event.preventDefault();const body=`Hi Isiah,\n\nI'm ${name.trim()}.\n\n${project.trim()}\n\nCurrent website: ${website.trim()||'Not yet'}\n\nThanks,\n${name.trim()}`;window.location.href=`mailto:${emailAddress}?subject=${encodeURIComponent(`Website project from ${name.trim()}`)}&body=${encodeURIComponent(body)}`;}}>
-      <label>Your name<input required maxLength={100} name="name" autoComplete="name" value={name} onChange={e=>setName(e.target.value)} placeholder="What should I call you?"/></label>
-      <label>Current website <span>(optional)</span><input type="url" name="website" autoComplete="url" placeholder="https://yourwebsite.com" value={website} onChange={e=>setWebsite(e.target.value)}/></label>
-      <label>Tell me about your project<textarea required maxLength={3000} name="project" rows={4} placeholder="A new website, a redesign, a little help with WordPress…" value={project} onChange={e=>setProject(e.target.value)}/></label>
-      <button className="button button-primary" type="submit">Continue in email <ArrowUpRight size={18}/></button>
-      <p className="form-note">Opens your email app with your details filled in. Nothing is sent until you send the email.</p>
-    </form>
-    <a className="dialog-email" href={emailLink}>Or email me directly at {emailAddress}</a>
-  </dialog>;
-}
 export default function App(){
   const [filter,setFilter]=useState('All projects');const [activeService,setActiveService]=useState<number|null>(0);const [brief,setBrief]=useState(false);const [copied,setCopied]=useState(false);const [copyFailed,setCopyFailed]=useState(false);
   const [visibleCount,setVisibleCount] = useState(pageSize);
@@ -165,9 +143,9 @@ export default function App(){
       </div></section>
       <section className="about-section container section-space" id="about"><div className="about-photo" data-reveal><img src={portrait} alt="Isiah Dane Geguera with his dog" width="640" height="720" loading="lazy"/><div className="photo-caption"><span>OFF-SCREEN, THAT’S ME.</span><span>AND MY LITTLE ASSISTANT ↗</span></div><div className="photo-note">A real person.<br/><em>In your corner.</em></div></div><div className="about-copy" data-reveal><p className="eyebrow"><span className="section-number">03 /</span> THE PERSON BEHIND THE WORK</p><h2>Hey, I’m Isiah.<br/><span>I make things<br/>work. And look good.</span></h2><p>I’m a WordPress designer and developer based in the Philippines, with over nine years of experience working with clients in the US, UK, and Australia.</p><p>I’m happiest turning a rough idea into something clear, useful, and thoughtfully built. Whether you’re a business owner who needs a new website or an agency looking for an extra pair of hands, you’ll work directly with me from start to finish.</p><div className="about-values"><span><Check size={15}/> Clear communication</span><span><Check size={15}/> Care in the details</span><span><Check size={15}/> Support beyond launch</span></div><button className="text-link" onClick={openBrief}>Let’s see what we can build <ArrowUpRight size={19}/></button></div></section>
       <section className="process-section container"><div className="process-intro" data-reveal><p className="eyebrow">NO MYSTERY. NO OVERCOMPLICATION.</p><h2>Good work.<br/> A simple process.</h2></div><div className="process-step" data-reveal><span>01</span><h3>We talk.</h3><p>Your goals, your audience, and what you need your website to do.</p></div><div className="process-step" data-reveal><span>02</span><h3>I build.</h3><p>Design and development, with clear updates and room for your feedback.</p></div><div className="process-step" data-reveal><span>03</span><h3>We launch.</h3><p>Final checks, a smooth handover, and a website you’re happy to share.</p></div></section>
-      <section className="contact-section" id="contact"><div className="container contact-inner" data-reveal><div className="contact-topline"><p className="eyebrow">GOT SOMETHING IN MIND?</p><span className="availability"><i/> Let’s make room for it.</span></div><h2>Let’s make<br/><em>your next move.</em><span aria-hidden="true">↗</span></h2><div className="contact-bottom"><p>A new website. A better one. A dependable creative partner.<br/>Start with a hello, and we’ll take it from there.</p><button className="button button-dark" onClick={openBrief}>Tell me about your project <ArrowUpRight size={19}/></button></div><div className="direct-contact"><a href={emailLink}>{emailAddress}</a><button onClick={copyEmail} className="copy-email" aria-label={copied?'Email address copied':'Copy email address'}>{copied?<Check size={16}/>:<Copy size={16}/>}<span>{copied?'Copied!':'Copy'}</span></button><span className="copy-status" role="status">{copyFailed?'Please select and copy the email address above.':copied?'Email address copied to clipboard.':''}</span></div></div></section>
+      <section className="contact-section" id="contact"><div className="container contact-inner" data-reveal><div className="contact-topline"><p className="eyebrow">GOT SOMETHING IN MIND?</p><span className="availability"><i/> Let’s make room for it.</span></div><h2>Let’s make<br/><em>your next move.</em><span aria-hidden="true">↗</span></h2><div className="contact-bottom"><p>A new website. A better one. A dependable creative partner.<br/>Start with a hello, and we’ll take it from there.</p><button className="button button-dark" onClick={openBrief}>Tell me about your project <ArrowUpRight size={19}/></button></div><div className="direct-contact"><a href={emailLink}>{emailAddress}</a><button onClick={copyEmail} className="copy-email" aria-label={copied?'Email address copied':'Copy email address'}>{copied?<Check size={16}/>:<Copy size={16}/>}<span>{copied?'Copied!':'Copy'}</span></button><span className="copy-status" role="status">{copyFailed?'Please select and copy the email address above.':copied?'Email address copied to clipboard.':''}</span></div><a className="contact-whatsapp" href={whatsappLink} target="_blank" rel="noreferrer" aria-label={`Chat on WhatsApp at ${whatsappNumber} (opens in a new tab)`}><MessageCircle size={19}/><span><small>CHAT ON WHATSAPP</small>{whatsappNumber}</span><ArrowUpRight size={17}/></a></div></section>
     </main>
-    <footer className="site-footer"><div className="container footer-inner"><a className="brand" href="#main" aria-label="Back to top">isiah<span className="brand-star" aria-hidden="true">✳</span></a><p>Thoughtfully designed. Carefully built.</p><div className="footer-links"><a href="https://wa.me/639772655441" target="_blank" rel="noreferrer"><MessageCircle size={14}/>WhatsApp <ArrowUpRight size={13}/></a><a href="https://github.com/Isiah-19" target="_blank" rel="noreferrer">GitHub <ArrowUpRight size={13}/></a><a href="#main">Back to top ↑</a></div><span className="copyright">© {new Date().getFullYear()} Isiah Dane Geguera</span></div></footer>
+    <footer className="site-footer"><div className="container footer-inner"><a className="brand" href="#main" aria-label="Back to top">isiah<span className="brand-star" aria-hidden="true">✳</span></a><p>Thoughtfully designed. Carefully built.</p><div className="footer-links"><a href={whatsappLink} target="_blank" rel="noreferrer"><MessageCircle size={14}/>WhatsApp · {whatsappNumber} <ArrowUpRight size={13}/></a><a href="https://github.com/Isiah-19" target="_blank" rel="noreferrer">GitHub <ArrowUpRight size={13}/></a><a href="#main">Back to top ↑</a></div><span className="copyright">© {new Date().getFullYear()} Isiah Dane Geguera</span></div></footer>
     {brief?<ContactDialog onClose={closeBrief}/>:null}
   </>;
 }
