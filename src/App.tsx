@@ -1,10 +1,23 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
-import { ArrowUpRight, Check, Copy, Menu, X, Plus, Minus, MessageCircle, Code2, Layers, Search, Wrench } from 'lucide-react';
+import { ArrowUpRight, Check, Copy, Menu, X, Plus, Minus, MessageCircle, Code2, Layers, Search, Wrench, Pause, Play } from 'lucide-react';
 import portrait from './assets/isiah-dane-about.jpg';
 import Hero from './components/Hero';
 import ContactDialog from './components/ContactDialog';
 import { emailAddress, emailLink, whatsappLink, whatsappNumber } from './lib/contact';
 import { projects, filters, pageSize, type Project } from './data/projects';
+import { useMotionPreference } from './lib/useMotionPreference';
+
+const toolkit = ['WordPress', 'Shopify', 'Codex', 'Claude', 'Elementor', 'SEO', 'Automation'];
+
+function Toolkit() {
+  return <section className="tools-strip" aria-label="My everyday toolkit">
+    <div className="container tools-heading"><span className="tool-label">MY EVERYDAY TOOLKIT</span><span className="tools-end">Good tools. Better attention to detail.</span></div>
+    <div className="tools-window"><div className="tools-track">
+      <div className="tools-list">{toolkit.map(tool => <span key={tool}>{tool}<i aria-hidden="true">✳</i></span>)}</div>
+      <div className="tools-list tools-duplicate" aria-hidden="true">{toolkit.map(tool => <span key={tool}>{tool}<i>✳</i></span>)}</div>
+    </div></div>
+  </section>;
+}
 
 const services = [
   {icon:Layers,title:'Web design & WordPress',number:'01',summary:'From a blank canvas to a website that feels like you.',text:'Thoughtful layouts, clear page structure, and responsive WordPress builds. I work with Elementor, Divi, and Salient, and can build from your brand guide or help shape a new direction.',tags:'ELEMENTOR / DIVI / SALIENT'},
@@ -12,9 +25,9 @@ const services = [
   {icon:Search,title:'SEO & site improvements',number:'03',summary:'The details that make a website easier to find and use.',text:'Practical on-page SEO, technical improvements, and performance work. From heading structure and metadata to mobile usability, I help make your website clearer for people and search engines.',tags:'ON-PAGE SEO / TECHNICAL SEO / PERFORMANCE'},
   {icon:Wrench,title:'Ongoing website support',number:'04',summary:'A reliable pair of hands after launch, too.',text:'Plugin and theme updates, backups, troubleshooting, and everyday changes. Useful support for business owners and agencies who want someone to take care of the website details.',tags:'MAINTENANCE / TROUBLESHOOTING / AGENCY SUPPORT'},
 ];
-function useReveals(filter: string, visibleCount: number) {
+function useReveals(filter: string, visibleCount: number, motionEnabled: boolean) {
   useEffect(() => {
-    if (!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (!motionEnabled || !('IntersectionObserver' in window)) return;
     const nodes = document.querySelectorAll<HTMLElement>('[data-reveal]:not(.is-visible)');
     const observer = new IntersectionObserver(entries => entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -24,10 +37,10 @@ function useReveals(filter: string, visibleCount: number) {
     }), { threshold: 0.05, rootMargin: '0px 0px 35px 0px' });
     nodes.forEach(node => { node.classList.add('will-reveal'); observer.observe(node); });
     return () => { observer.disconnect(); nodes.forEach(node => node.classList.remove('will-reveal')); };
-  }, [filter, visibleCount]);
+  }, [filter, visibleCount, motionEnabled]);
 }
 
-function Header({ onContact }: { onContact: () => void }) {
+function Header({ onContact, motion }: { onContact: () => void; motion: ReturnType<typeof useMotionPreference> }) {
   const [menu, setMenu] = useState(false);
   const [activeSection, setActiveSection] = useState('intro');
   const header = useRef<HTMLElement>(null);
@@ -73,6 +86,7 @@ function Header({ onContact }: { onContact: () => void }) {
         <a href="#work" aria-current={activeSection === 'work' ? 'location' : undefined} onClick={() => setMenu(false)}>Work<span>{projects.length}</span></a>
         <a href="#expertise" aria-current={activeSection === 'expertise' ? 'location' : undefined} onClick={() => setMenu(false)}>What I do</a>
         <a href="#about" aria-current={activeSection === 'about' ? 'location' : undefined} onClick={() => setMenu(false)}>About</a>
+        <button className="motion-toggle" onClick={motion.toggle} disabled={motion.reduced} aria-label={motion.reduced ? 'Motion reduced by your device preference' : motion.enabled ? 'Pause animations' : 'Enable animations'} aria-pressed={!motion.enabled}>{motion.enabled ? <Pause size={12} /> : <Play size={12} />}<span>{motion.reduced ? 'Motion reduced' : motion.enabled ? 'Motion on' : 'Motion off'}</span></button>
         <button className="nav-contact" onClick={() => { setMenu(false); onContact(); }}>Let’s talk <ArrowUpRight size={17} /></button>
       </nav>
     </div>
@@ -93,12 +107,13 @@ function ProjectCard({project,index}:{project:Project;index:number}) {
   </article>;
 }
 export default function App(){
+  const motion = useMotionPreference();
   const [filter,setFilter]=useState('All projects');const [activeService,setActiveService]=useState<number|null>(0);const [brief,setBrief]=useState(false);const [copied,setCopied]=useState(false);const [copyFailed,setCopyFailed]=useState(false);
   const [visibleCount,setVisibleCount] = useState(pageSize);
   const copyTimer=useRef<ReturnType<typeof setTimeout>|null>(null);
   const briefTrigger = useRef<HTMLElement | null>(null);
   const pendingProjectFocus = useRef<string | null>(null);
-  useReveals(filter, visibleCount);
+  useReveals(filter, visibleCount, motion.enabled);
   useEffect(() => {
     if (!brief) return;
     const previousOverflow = document.body.style.overflow;
@@ -128,10 +143,10 @@ export default function App(){
   }
   return <>
     <a className="skip-link" href="#main">Skip to content</a>
-    <Header onContact={openBrief} />
+    <Header onContact={openBrief} motion={motion} />
     <main id="main">
       <Hero onContact={openBrief} />
-      <div className="tools-strip"><div className="container tools-inner"><span className="tool-label">MY EVERYDAY TOOLKIT</span><span>WordPress</span><span>Shopify</span><span>Codex</span><span>Claude</span><span>Elementor</span><span>SEO</span><span>Automation</span><span className="tools-end">Good tools. Better attention to detail.</span></div></div>
+      <Toolkit />
       <section className="work-section container section-space" id="work"><div className="section-heading" data-reveal><div><p className="eyebrow"><span className="section-number">01 /</span> SELECTED WORK</p><h2>Different businesses.<br/><span>The same attention to detail.</span></h2></div><p className="section-aside">A selection of websites I’ve worked on.<br/>Made for real businesses, and real people.</p></div>
         <div className="work-toolbar"><div className="work-filters" role="group" aria-label="Filter selected work">{filters.map(f=><button key={f} className={filter===f?'active':''} aria-pressed={filter===f} aria-controls="project-results" onClick={()=>chooseFilter(f)}>{f}<span>{f==='All projects'?projects.length:projects.filter(project=>project.type===f).length}</span></button>)}</div><span className="filter-result" aria-hidden="true">{visibleProjects.length} of {filtered.length} {filtered.length===1?'project':'projects'}</span></div>
         <div className="project-grid" id="project-results">{visibleProjects.map(p=><ProjectCard key={p.id} project={p} index={projects.indexOf(p)}/>)}</div>
